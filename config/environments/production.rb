@@ -1,4 +1,4 @@
-EmailStandbox::Application.configure do
+EmailSandbox::Application.configure do
   # Settings specified here will take precedence over those in config/application.rb
 
   # The production environment is meant for finished, "live" apps.
