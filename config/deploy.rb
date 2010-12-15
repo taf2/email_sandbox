@@ -69,7 +69,7 @@ end
 
 namespace :smtp do
   task :start do
-    run "cd #{current_path} && rvm use #{rvm} && bundle exec ./script/smtp-server.rb"
+    run "RAILS_ENV=production cd #{current_path} && rvm use #{rvm} && bundle exec ./script/smtp-server.rb -e production"
   end
 
   task :stop do

@@ -6,7 +6,29 @@
 # drop each email into a database and provide an easy web interface to see all the emails that would normally be sent
 #
 require 'gserver'
-puts "Booting..."
+require 'optparse'
+
+options = {}
+
+OptionParser.new do |opts|
+  opts.banner = "Usage: #{__FILE__} [options]"
+
+  opts.on("-p", "--port PORT", "Bind to PORT") do |port|
+    options[:port] = port
+  end
+
+  opts.on("-e", "--environment ENV", "Load RAILS environment, defaults to development") do |environment|
+    options[:environment] = environment
+  end
+
+end.parse!
+
+options[:environment] ||= 'development'
+options[:port] ||= 1234
+
+puts "Booting... #{options[:environment]}"
+
+RAILS_ENV = options[:environment]
 
 APP_PATH = File.expand_path('../../config/application',  __FILE__)
 require File.expand_path('../../config/environment',  __FILE__)
@@ -96,8 +118,8 @@ pid = fork do
     defined?(ActiveRecord::Base) and ActiveRecord::Base.connection.disconnect!
     defined?(ActiveRecord::Base) and ActiveRecord::Base.establish_connection
 
-    a = SMTPServer.new(1234)
-    puts "Listening on Port 1234 #{Process.pid}"
+    a = SMTPServer.new(options[:port].to_i)
+    puts "Listening on Port #{options[:port]} #{Process.pid}"
 
     File.open(PID_PATH,'wb') {|f| f << Process.pid }
 
