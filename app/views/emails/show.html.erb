@@ -1,0 +1,16 @@
+<table>
+  <tbody>
+    <tr>
+      <th>To</th><td><%= @email.to_email %></td>
+    </tr>
+    <tr>
+      <th>From</th><td><%= @email.from_email %></td>
+    </tr>
+    <tr>
+      <th>Subject</th><td><%= @email.subject %></td>
+    </tr>
+    <tr>
+      <th valign="top">Message</th><td><pre><%= @email.message %></pre></td>
+    </tr>
+  </tbody>
+</table>

@@ -1,0 +1,28 @@
+<h1>Emails</h1>
+
+<%= form_for :emails, :url => check_emails_path do|f| %>
+  <%= f.submit 'Check Email Server' %>
+<% end %>
+
+<table style="width:100%;">
+  <thead>
+    <tr>
+      <th></th>
+      <th>To</th>
+      <th>From</th>
+      <th>Subject</th>
+      <th>Summary</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @emails.each do|email| %>
+    <tr>
+      <td><%= link_to 'Show', email_path(email) %></td>
+      <td><%= email.to_email %></td>
+      <td><%= email.from_email %></td>
+      <td><%= email.subject %></td>
+      <td><%= truncate email.message %></td>
+    </tr>
+    <% end %>
+  </tbody>
+</table>
