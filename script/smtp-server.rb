@@ -28,7 +28,7 @@ options[:port] ||= 1234
 
 puts "Booting... #{options[:environment]}"
 
-RAILS_ENV = options[:environment]
+RACK_ENV = ENV['RAILS_ENV'] = RAILS_ENV = options[:environment]
 
 APP_PATH = File.expand_path('../../config/application',  __FILE__)
 require File.expand_path('../../config/environment',  __FILE__)
@@ -119,7 +119,7 @@ pid = fork do
     defined?(ActiveRecord::Base) and ActiveRecord::Base.establish_connection
 
     a = SMTPServer.new(options[:port].to_i)
-    puts "Listening on Port #{options[:port]} #{Process.pid}"
+    puts "Listening on Port #{options[:port]} as #{Process.pid}"
 
     File.open(PID_PATH,'wb') {|f| f << Process.pid }
 
