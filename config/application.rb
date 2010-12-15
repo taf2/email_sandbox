@@ -45,7 +45,7 @@ module EmailSandbox
 #      :password => '',
       :address => '127.0.0.1',
       :domain => 'captico.com',
-      :authentication => nil
+      :authentication => 'plain'
     }
   end
 end
