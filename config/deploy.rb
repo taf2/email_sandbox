@@ -62,9 +62,8 @@ namespace :rails do
 
   desc "Tell RVM to have trust in our release"
   task :rvm_trust do
-    run "rvm rvmrc trust #{release_path}"
+    run "rvm rvmrc trust #{release_path} && rvm rvmrc trust #{current_path}"
   end
-
 
 end
 
