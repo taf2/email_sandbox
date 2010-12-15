@@ -67,6 +67,16 @@ namespace :rails do
 
 end
 
+namespace :smtp do
+  task :start do
+    run "cd #{current_path} && rvm use #{rvm} && bundle exec ./script/smtp-server.rb"
+  end
+
+  task :stop do
+    run "kill `cat #{shared_path}/pids/smtp.pid` && rm #{shared_path}/pids/smtp.pid"
+  end
+end
+
 namespace :deploy do
 
   # fresh app server startup

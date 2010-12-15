@@ -11,6 +11,15 @@ puts "Booting..."
 APP_PATH = File.expand_path('../../config/application',  __FILE__)
 require File.expand_path('../../config/environment',  __FILE__)
 
+PID_PATH = File.expand_path(File.join(Rails.root,'tmp','pids','smtp.pid'))
+LOG_STDERR = File.expand_path(File.join(Rails.root,'log','smtp.stderr.log'))
+LOG_STDOUT = File.expand_path(File.join(Rails.root,'log','smtp.stdout.log'))
+
+if File.exist?(PID_PATH)
+  STDERR.puts "Error #{PID_PATH} exists!"
+  exit 1
+end
+
 class SMTPServer < GServer
   def serve(io)
     @data_mode = false
@@ -68,7 +77,36 @@ class SMTPServer < GServer
   end
 end
 
-a = SMTPServer.new(1234)
-puts "Listening on Port 1234"
-a.start
-a.join
+defined?(ActiveRecord::Base) and ActiveRecord::Base.connection.disconnect!
+
+pid = fork do
+  Process.setsid
+
+  fork do
+    Dir.chdir '/'
+    File.umask 0000
+
+    STDIN.reopen '/dev/null'
+    STDOUT.reopen LOG_STDOUT, 'a'
+    STDOUT.sync = true
+    STDERR.reopen LOG_STDERR, 'a'
+    STDERR.sync = true
+    #STDERR.reopen STDOUT
+
+    defined?(ActiveRecord::Base) and ActiveRecord::Base.connection.disconnect!
+    defined?(ActiveRecord::Base) and ActiveRecord::Base.establish_connection
+
+    a = SMTPServer.new(1234)
+    puts "Listening on Port 1234 #{Process.pid}"
+
+    File.open(PID_PATH,'wb') {|f| f << Process.pid }
+
+    at_exit { File.unlink(PID_PATH) }
+
+    a.start
+    a.join
+
+  end
+end
+
+Process.detach(pid)
