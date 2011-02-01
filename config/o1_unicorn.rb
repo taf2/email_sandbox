@@ -1,4 +1,4 @@
-listen "/tmp/email_sandbox.rainbows.sock", :backlog => 64
+listen "/tmp/email_sandbox.unicorn.sock", :backlog => 64
 worker_processes 2
 
 working_directory "/var/www/apps/email_sandbox/current"
